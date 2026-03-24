@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jihun Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+KR:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface-hover: #1a1a26;
+    --border: #1e1e2e;
+    --text: #e4e4ef;
+    --text-dim: #6b6b80;
+    --accent: #5cffb1;
+    --accent-dim: rgba(92, 255, 177, 0.08);
+    --accent-glow: rgba(92, 255, 177, 0.15);
+    --tag-bg: rgba(92, 255, 177, 0.06);
+    --radius: 16px;
+  }
+
+  body {
+    font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Noise overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── Ambient blobs ── */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 { width: 500px; height: 500px; background: rgba(92,255,177,0.04); top: -100px; right: -100px; }
+  .blob-2 { width: 400px; height: 400px; background: rgba(80,120,255,0.03); bottom: 10%; left: -80px; }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 80px 0 20px;
+    text-align: center;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .header-info {
+    text-align: left;
+  }
+  .avatar-ring {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    padding: 3px;
+    flex-shrink: 0;
+    animation: pulse-ring 3s ease-in-out infinite;
+  }
+  .avatar-ring img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--surface);
+  }
+  @keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(92,255,177,0.2); }
+    50% { box-shadow: 0 0 0 12px rgba(92,255,177,0); }
+  }
+
+  header h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+  header h1 span { color: var(--accent); }
+  .birth-date {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  header p.subtitle {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  /* ── Header-specific hw-badges layout ── */
+  header .hw-badges {
+    justify-content: center;
+    margin-top: 20px;
+    max-width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  header .hw-badge {
+    flex: 1 1 calc(33.333% - 6px);
+    min-width: 180px;
+  }
+
+  /* ── Tech marquee in header ── */
+  .marquee-container {
+    margin-top: 24px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    animation: marquee 35s linear infinite;
+  }
+  .marquee-container:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(92,255,177,0.15);
+    border-radius: 100px;
+    padding: 6px 16px;
+    background: var(--tag-bg);
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .marquee-item:hover {
+    transform: scale(1.1);
+    background: rgba(92,255,177,0.12);
+  }
+  .marquee-item img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── Links row ── */
+  .links-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .links-row a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+  .links-row a:hover { color: var(--accent); }
+  .links-row a svg { width: 16px; height: 16px; fill: currentColor; }
+
+  /* ── Divider ── */
+  .divider {
+    width: 48px; height: 1px;
+    background: var(--border);
+    margin: 56px auto;
+  }
+
+  /* ── Section title ── */
+  .section-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  /* ── Project grid ── */
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding-bottom: 20px;
+  }
+
+  /* ── Project card ── */
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+  .project-card:hover {
+    border-color: rgba(92,255,177,0.2);
+    transform: translateY(-2px);
+  }
+
+  /* ── Card header (always visible) ── */
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+  }
+  .card-index {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--accent);
+    background: var(--accent-dim);
+    min-width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+  .card-info { flex: 1; min-width: 0; }
+  .card-info h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-info .card-period {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .card-info .one-liner {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .card-tags span {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(92,255,177,0.12);
+    border-radius: 6px;
+    padding: 3px 8px;
+    background: var(--tag-bg);
+  }
+
+  /* ── Toggle chevron ── */
+  .toggle-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.35s ease, background 0.2s;
+    background: transparent;
+  }
+  .toggle-icon svg {
+    width: 14px; height: 14px;
+    fill: var(--text-dim);
+    transition: fill 0.2s;
+  }
+  .project-card:hover .toggle-icon svg { fill: var(--accent); }
+  .project-card.open .toggle-icon {
+    transform: rotate(180deg);
+    background: var(--accent-dim);
+  }
+  .project-card.open .toggle-icon svg { fill: var(--accent); }
+
+  /* ── Media panel (collapsed) ── */
+  .media-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .project-card.open .media-panel {
+    max-height: 700px;
+  }
+  .media-wrapper {
+    padding: 0 24px 24px;
+  }
+  .media-frame {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .media-frame video {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 420px;
+    object-fit: contain;
+    background: #0d0d15;
+    border-radius: 12px;
+  }
+  /* ── Placeholder when no video ── */
+  .media-placeholder {
+    width: 100%;
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #0f0f1a 0%, #16162a 100%);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-weight: 300;
+    border-radius: 12px;
+    border: 1px dashed rgba(92,255,177,0.12);
+  }
+  .media-placeholder svg {
+    width: 40px; height: 40px;
+    fill: rgba(92,255,177,0.2);
+  }
+
+  /* ── Detail row under GIF ── */
+  .detail-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 14px;
+    gap: 10px;
+  }
+  .detail-summary {
+    font-size: 0.85rem;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.6;
+    flex: 1;
+    min-width: 200px;
+  }
+  .detail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid rgba(92,255,177,0.2);
+    padding: 7px 16px;
+    border-radius: 100px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .detail-link:hover {
+    background: var(--accent-dim);
+  }
+  .detail-link svg { width: 12px; height: 12px; fill: currentColor; }
+
+  /* ── Hardware badges ── */
+  .hw-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .hw-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--tag-bg);
+    border: 1px solid rgba(92,255,177,0.10);
+    border-radius: 8px;
+    padding: 8px 14px 8px 8px;
+    flex: 1 1 calc(50% - 4px);
+    min-width: 240px;
+  }
+  .hw-badge-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    object-fit: cover;
+    transform: scale(1.2);
+    background: #1a1a26;
+    padding: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .hw-badge-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  .hw-badge-role {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .hw-badge-device {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .hw-badge-model {
+    font-size: 0.65rem;
+    font-weight: 300;
+    color: var(--text-dim);
+    line-height: 1.3;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 40px 0 60px;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    header { padding-top: 48px; }
+    .header-top { flex-direction: column; gap: 16px; }
+    .header-info { text-align: center; }
+    header h1 { font-size: 1.7rem; }
+    .avatar-ring { width: 130px; height: 130px; }
+    .card-header { flex-wrap: wrap; gap: 10px; padding: 16px 18px; }
+    .card-tags { order: 3; width: 100%; }
+    .gif-wrapper { padding: 0 18px 18px; }
+    .hw-badges { flex-direction: column; }
+    .hw-badge { min-width: 0; }
+  }
+
+  /* ── Year divider ── */
+  .year-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 8px 0 4px;
+  }
+  .year-divider::before,
+  .year-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+  .year-divider span {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* ── Activity cards ── */
+  .activity-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-bottom: 20px;
+  }
+
+  .activity-card {
+    background: var(--bg);
+    border-left: 4px solid rgba(92,255,177,0.3);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    overflow: hidden;
+    transition: border-left-color 0.3s, background 0.3s;
+    cursor: pointer;
+  }
+  .activity-card:hover {
+    border-left-color: var(--accent);
+    background: var(--surface);
+  }
+  .activity-card.open {
+    border-left-color: var(--accent);
+    background: var(--surface);
+  }
+
+  .activity-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+  }
+
+  .activity-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .activity-category {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .activity-date {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    opacity: 0.7;
+  }
+  .activity-info h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .activity-info .one-liner {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .activity-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  /* ── Activity thumb placeholder ── */
+  .activity-thumb-placeholder {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #0f0f1a 0%, #16162a 100%);
+    border: 1px dashed rgba(92,255,177,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .activity-thumb-placeholder svg {
+    width: 24px;
+    height: 24px;
+    fill: rgba(92,255,177,0.25);
+  }
+
+  /* ── Activity panel (collapsed) ── */
+  .activity-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .activity-card.open .activity-panel {
+    max-height: 800px;
+  }
+
+  .activity-panel .media-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    background: #0d0d15;
+    border-radius: 10px;
+  }
+
+  .activity-card .toggle-icon svg { fill: var(--text-dim); }
+  .activity-card:hover .toggle-icon svg { fill: var(--accent); }
+  .activity-card.open .toggle-icon { transform: rotate(180deg); background: var(--accent-dim); }
+  .activity-card.open .toggle-icon svg { fill: var(--accent); }
+
+  @media (max-width: 640px) {
+    .activity-header { flex-wrap: wrap; gap: 10px; padding: 14px 16px; }
+    .activity-thumb,
+    .activity-thumb-placeholder { width: 48px; height: 48px; }
+    .activity-panel .media-frame img { max-height: 200px; }
+  }
+
+  /* ── Entrance animations ── */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in {
+    opacity: 0;
+    animation: fade-up 0.6s ease forwards;
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<div class="container">
+
+  <!-- ── HEADER ── -->
+  <header>
+    <!-- 상단: 아바타 + 텍스트 정보 (수평 배치) -->
+    <div class="header-top animate-in" style="animation-delay:0.1s">
+      <div class="avatar-ring">
+        <img src="./assets/images/avatar.png" alt="avatar">
+      </div>
+      <div class="header-info">
+        <h1>김지훈<span>.</span></h1>
+        <p class="birth-date">2000.03.31</p>
+        <p class="subtitle">
+          멀티에이전트 AI시스템을 개발하여<br>복잡한 문제를 해결합니다.
+        </p>
+      </div>
+    </div>
+
+    <!-- Edge Device 배지 -->
+    <div class="hw-badges animate-in" style="animation-delay:0.25s">
+      <div class="hw-badge">
+        <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+        <div class="hw-badge-text">
+          <span class="hw-badge-role">Edge Device</span>
+          <span class="hw-badge-device">Jetson AGX Orin</span>
+          <span class="hw-badge-model">64GB Ampere</span>
+        </div>
+      </div>
+      <div class="hw-badge">
+        <img class="hw-badge-img" src="./assets/images/dgx_spark.png" alt="DGX Spark">
+        <div class="hw-badge-text">
+          <span class="hw-badge-role">Edge Device</span>
+          <span class="hw-badge-device">DGX Spark</span>
+          <span class="hw-badge-model">128GB Grace Blackwell</span>
+        </div>
+      </div>
+      <div class="hw-badge">
+        <img class="hw-badge-img" src="./assets/images/jetson-thor.png" alt="Jetson Thor">
+        <div class="hw-badge-text">
+          <span class="hw-badge-role">Edge Device</span>
+          <span class="hw-badge-device">Jetson Thor</span>
+          <span class="hw-badge-model">128GB Grace Blackwell</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 기술 태그 -->
+    <div class="marquee-container animate-in" style="animation-delay:0.35s">
+      <div class="marquee-track">
+        <!-- Set 1 -->
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python">Python</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg" alt="PyTorch">PyTorch</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/vllm-color.svg" alt="vLLM">vLLM</div>
+        <div class="marquee-item"><img src="https://cdn.simpleicons.org/nvidia" alt="TRT-LLM">TRT-LLM</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/huggingface-color.svg" alt="HuggingFace">HuggingFace</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/ollama.svg" alt="Ollama">Ollama</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/microsoft-color.svg" alt="MS Agent Framework">MS Agent Framework</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/microsoft-color.svg" alt="AutoGen">AutoGen</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/microsoft-color.svg" alt="MS Graph API">MS Graph API</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" alt="Docker">Docker</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kubernetes/kubernetes-original.svg" alt="Kubernetes">K8s</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg" alt="FastAPI">FastAPI</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="Linux">Linux</div>
+        <!-- Set 2 (duplicate for seamless loop) -->
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python">Python</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg" alt="PyTorch">PyTorch</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/vllm-color.svg" alt="vLLM">vLLM</div>
+        <div class="marquee-item"><img src="https://cdn.simpleicons.org/nvidia" alt="TRT-LLM">TRT-LLM</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/huggingface-color.svg" alt="HuggingFace">HuggingFace</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/ollama.svg" alt="Ollama">Ollama</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/microsoft-color.svg" alt="MS Agent Framework">MS Agent Framework</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/microsoft-color.svg" alt="AutoGen">AutoGen</div>
+        <div class="marquee-item"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/microsoft-color.svg" alt="MS Graph API">MS Graph API</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" alt="Docker">Docker</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kubernetes/kubernetes-original.svg" alt="Kubernetes">K8s</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg" alt="FastAPI">FastAPI</div>
+        <div class="marquee-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="Linux">Linux</div>
+      </div>
+    </div>
+
+    <!-- 링크 -->
+    <div class="links-row animate-in" style="animation-delay:0.45s">
+      <a href="https://github.com/Torykoon" target="_blank">
+        <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+      <a href="mailto:kimdagu1234@gmail.com">
+        <svg viewBox="0 0 16 16"><path d="M0 4a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H2a2 2 0 01-2-2V4zm2-1a1 1 0 00-1 1v.217l7 4.2 7-4.2V4a1 1 0 00-1-1H2zm13 2.383l-4.758 2.855L15 11.114V5.383zm-.034 6.878L9.271 8.82 8 9.583 6.729 8.82l-5.694 3.44A1 1 0 002 13h12a1 1 0 00.966-.739zM1 11.114l4.758-2.876L1 5.383v5.731z"/></svg>
+        Email
+      </a>
+    </div>
+  </header>
+
+  <div class="divider animate-in" style="animation-delay:0.55s"></div>
+
+  <div class="section-title animate-in" style="animation-delay:0.6s">Projects</div>
+
+  <!-- ── PROJECT GRID ── -->
+  <div class="project-grid">
+
+    <!-- ── 2026 ── -->
+    <div class="year-divider animate-in" style="animation-delay:0.65s"><span>2026</span></div>
+
+    <!-- ====== PROJECT 1 ====== -->
+    <div class="project-card animate-in" style="animation-delay:0.7s" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="card-index">'26</div>
+        <div class="card-info">
+          <h3>Teams 파일 AI 검색 에이전트</h3>
+          <span class="card-period">2026.01</span>
+          <div class="one-liner">수 백개 이상의 Teams 채널에서 자연어로 파일을 찾고 내용까지 분석하는 AI 시스템</div>
+        </div>
+        <div class="card-tags">
+          <span>Agent Framework</span>
+          <span>Graph API</span>
+          <span>vLLM</span>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="media-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <video muted loop playsinline preload="metadata">
+              <source src="https://res.cloudinary.com/dbvlbikps/video/upload/v1774275896/01-rag-chatbot_eowiee.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              Microsoft Graph API 기반 하이브리드 병렬 검색(KQL + Drive API)과 VLM/LLM 2단계 심층 분석으로, 수 백개 이상의 Teams 채널에서 파일명이 아닌 내용 기반으로 문서를 찾아 추천합니다. <br>6단계 에이전트 파이프라인을 설계하여 단일 에이전트 순차처리와 비교하여 기준 검색 속도 12배 개선(6분→90초), VLM 토큰 90% 절감을 달성했습니다.<br>서버사이드 인덱싱API를 적극 사용하여 추가적인 유지보수 없이 지속가능한 시스템을 구축했습니다.<br>오픈소스 Edge LLM 환경만을 활용하여 적은 리소스로 높은 사용성을 확보한것이 특징입니다.
+            </div>
+          </div>
+          <div class="hw-badges">
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/dgx_spark.png" alt="DGX Spark">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">LLM</span>
+                <span class="hw-badge-device">DGX Spark</span>
+                <span class="hw-badge-model">GPT-OSS 120B</span>
+              </div>
+            </div>
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">VLM</span>
+                <span class="hw-badge-device">Jetson AGX Orin</span>
+                <span class="hw-badge-model">Qwen3-VL 30B A3B</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 2025 ── -->
+    <div class="year-divider animate-in" style="animation-delay:0.75s"><span>2025</span></div>
+
+    <!-- ====== PROJECT 2 ====== -->
+    <div class="project-card animate-in" style="animation-delay:0.8s" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="card-index">'25</div>
+        <div class="card-info">
+          <h3>TBM 문서 AI 이중 평가 시스템</h3>
+          <span class="card-period">2025.12</span>
+          <div class="one-liner">건설 안전 문서 신뢰도를 두 LLM이 병렬 교차 검증하는 LLM-as-a-judge 자동화 파이프라인</div>
+        </div>
+        <div class="card-tags">
+          <span>Agent Framework</span>
+          <span>vLLM</span>
+          <span>MongoDB</span>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="media-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <img src="./assets/images/02.png" alt="PROJECT 2 데모" style="width:100%; display:block;">
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              건설 현장 TBM(Tool Box Meeting) 문서의 신뢰도를 Local LLM과 Gemini가 50개 항목 체크리스트로 독립 교차 평가합니다. <br>이중 병렬화 시스템으로 5사이클×131문서를 자동 처리하며, LLM 추론능력에 의존하지않고 결정론적 파이프라인을 구축하여 안정적인 결과를 보장하는것이 특징입니다.<br>오픈소스 LLM과 폐쇄형 API모델의 추론 능력 차이와 비용을 고려하여 에이전트간 작업 분기를 진행한것이 가장 큰 특징입니다.
+            </div>
+          </div>
+          <div class="hw-badges">
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/dgx_spark.png" alt="DGX Spark">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">LLM</span>
+                <span class="hw-badge-device">DGX Spark</span>
+                <span class="hw-badge-model">GPT-OSS 120B</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PROJECT 3 (K3s — 2025.08) ====== -->
+    <div class="project-card animate-in" style="animation-delay:0.85s" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="card-index">'25</div>
+        <div class="card-info">
+          <h3>K3s 기반 스마트 건설 안전 SaaS 플랫폼</h3>
+          <span class="card-period">2025.08</span>
+          <div class="one-liner">Bash 스크립트 원클릭으로 App·LLM Serving·Vector DB를 K3s 엣지 환경에 자동 배포하는 건설 안전 SaaS</div>
+        </div>
+        <div class="card-tags">
+          <span>K8S</span>
+          <span>vLLM</span>
+          <span>RAG</span>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="media-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <video muted loop playsinline preload="metadata">
+              <source src="./assets/videos/04.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              "컨소시엄형 기술개발 지원사업"의 핵심 AI 아키텍처를 설계하고, App·LLM Serving·Vector DB를 독립 모듈로 구성하여 K3s(경량 Kubernetes) 환경으로 구축했습니다. <br>Bash 스크립트 한 번의 실행으로 전체 PaaS 스택이 엣지 디바이스(Jetson AGX Orin)에 자동 배포되도록 설계하여, 현장 인프라 구성의 진입 장벽을 최소화했습니다.
+            </div>
+          </div>
+          <div class="hw-badges">
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">Edge</span>
+                <span class="hw-badge-device">Jetson AGX Orin</span>
+                <span class="hw-badge-model">K3s Cluster</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PROJECT 4 (ERP — 2025.01) ====== -->
+    <div class="project-card animate-in" style="animation-delay:0.9s" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="card-index">'25</div>
+        <div class="card-info">
+          <h3>ERP 부정적발 Text-to-SQL 시스템</h3>
+          <span class="card-period">2025.01</span>
+          <div class="one-liner">GraphRAG로 ERP 테이블 관계를 지식 그래프화하여 자연어 부정적발 SQL을 자동 생성하는 멀티에이전트 시스템</div>
+        </div>
+        <div class="card-tags">
+          <span>GraphRAG</span>
+          <span>Autogen</span>
+          <span>Text-to-SQL</span>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="media-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <video autoplay muted loop playsinline preload="metadata">
+              <source src="./assets/videos/03.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              ERP 수백 개 테이블의 관계를 GraphRAG 지식 그래프로 매핑하고, AutoGen 멀티에이전트가 자연어 질의를 MS-SQL로 변환하여 부정거래를 탐지합니다. 사용자 질의 분석, SQL쿼리 작성, 값 검증등 4개의 에이전트가 협력하여 작업을 수행합니다.<br>공인인증기관 성능 평가 진행(정확도 90%+), 저작권 등록으로 기술 독창성을 공식 인정받았으며, 국내 ERP 분야 GraphRAG 도입 선도 사례입니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 2024 ── -->
+    <div class="year-divider animate-in" style="animation-delay:0.95s"><span>2024</span></div>
+
+    <!-- ====== PROJECT 5 ====== -->
+    <div class="project-card animate-in" style="animation-delay:1.0s" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="card-index">'24</div>
+        <div class="card-info">
+          <h3>작업현장 VCBO(Vision Conditional Based Operation) PoC진행</h3>
+          <span class="card-period">2024.12</span>
+          <div class="one-liner">VLM 모델 기반 Edge 디바이스 실시간 위험 상황 감지 PoC</div>
+        </div>
+        <div class="card-tags">
+          <span>VLM</span>
+          <span>DeepStream</span>
+          <span>Edge AI</span>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="media-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <video muted loop playsinline preload="metadata">
+              <source src="./assets/videos/05.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              VLM 모델을 활용하여 Edge 디바이스 환경에서 실시간 위험 상황 감지 PoC를 진행하였습니다. <br>NVIDIA DeepStream 컨테이너를 적극 활용하였고, 컨테이너 기반 비전 파이프라인을 구축하여 VLM 추론 능력을 적극적으로 활용한 대표 사례입니다.
+            </div>
+          </div>
+          <div class="hw-badges">
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">Edge</span>
+                <span class="hw-badge-device">Jetson AGX Orin</span>
+                <span class="hw-badge-model">NVIDIA VILA 3B</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PROJECT 6 ====== -->
+    <div class="project-card animate-in" style="animation-delay:1.05s" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="card-index">'24</div>
+        <div class="card-info">
+          <h3>멀티 에이전트 CBO(Condition Based Operation)</h3>
+          <span class="card-period">2024.07</span>
+          <div class="one-liner">AutoGen 멀티에이전트 기반 IoT 센서 데이터 분석 및 공조 설비 자동 최적화 AI 솔루션</div>
+        </div>
+        <div class="card-tags">
+          <span>AutoGen</span>
+          <span>OpenAI</span>
+          <span>Edge AI</span>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="media-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <img src="./assets/images/06.png" alt="PROJECT 6 데모" style="width:100%; display:block;">
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              시설 내 다양한 IoT 센서(온도, 습도, CO2, 차압 등) 데이터를 수집·분석하여, 건물과 제조 시설의 공조 설비 운전을 자동으로 최적화하는 AI 솔루션입니다. <br>AutoGen 멀티에이전트 프레임워크를 기반으로, 각 에이전트는 Executor 역할을 수행하며 중앙의 LLM 에이전트(GPT-3.5 Turbo)가 센서 값을 종합 분석합니다. <br>오류 발생 시 개발자에게 자동으로 폴백하는 안전 로직을 내장하여, 현장 무인 운영 환경에서도 신뢰성을 확보했습니다.
+            </div>
+          </div>
+          <div class="hw-badges">
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">Edge</span>
+                <span class="hw-badge-device">Jetson AGX Orin</span>
+                <span class="hw-badge-model">OpenAI GPT-3.5 Turbo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /project-grid -->
+
+  <div class="divider animate-in" style="animation-delay:1.1s"></div>
+
+  <div class="section-title animate-in" style="animation-delay:1.15s">Activities</div>
+
+  <!-- ── ACTIVITY GRID ── -->
+  <div class="activity-grid">
+
+    <!-- ════════════ 2025 ════════════ -->
+    <div class="year-divider animate-in" style="animation-delay:1.0s"><span>2025</span></div>
+
+    <!-- ====== Visual RAG 파이프라인 — 2025.07 ====== -->
+    <div class="activity-card animate-in" style="animation-delay:1.05s" onclick="toggleActivity(this)">
+      <div class="activity-header">
+        <div class="activity-info">
+          <span class="activity-category">Visual RAG</span> <span class="activity-date">· 2025.07</span>
+          <h3>Visual RAG 파이프라인: VLM 기반 건설 공정 자동 분류 시스템</h3>
+          <div class="one-liner">3-Stage 하이브리드 파이프라인으로 1,000+개 건설 공정을 자동 분류</div>
+        </div>
+        <div class="activity-thumb-placeholder">
+          <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM5 15l3.5-4.5 2.5 3.01L14.5 9l4.5 6H5z"/></svg>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <video muted loop playsinline preload="metadata">
+              <source src="./assets/videos/A04.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              기존에는 1,000여 개의 건설작업분류 체계에 대해 VLM에게 직접 분류를 요구했으나, 선택지가 과도하여 낮은 정확도·환각(Hallucination)·일관성 부재 문제가 발생했습니다.
+              <br><br>
+              이를 해결하기 위해 생성(Generation)과 검색(Retrieval)을 분리·결합하는 3-Stage 하이브리드 파이프라인을 설계했습니다. Phase 1에서 VLM이 현장 이미지를 자연어로 묘사하고, Phase 2에서 해당 텍스트를 벡터화하여 Qdrant DB에서 1,000+개 공정을 5~15개 후보로 압축한 뒤, Phase 3에서 원본 이미지와 후보군을 VLM에 재입력하여 최종 1건을 확정하고 선택 근거와 확신도를 함께 출력합니다.
+              <br><br>
+              후보 리스트 내에서만 선택하도록 강제하여 환각을 원천 차단하고, 새로운 공정 추가 시에도 벡터 DB 데이터만 수정하면 되어 모델 재학습 없이 확장이 가능합니다.
+              <br><br>
+              본 시스템은 컨소시엄형 과제의 핵심 비전 분류 시스템으로 채택되어 실제 현장에서 활용되고 있습니다.
+            </div>
+          </div>
+          <div class="hw-badges">
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">Edge Device</span>
+                <span class="hw-badge-device">Jetson AGX Orin</span>
+                <span class="hw-badge-model">Cosmos Reason1 8B</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== Text-To-SQL MCP 연동 — 2025.06 ====== -->
+    <div class="activity-card animate-in" style="animation-delay:1.1s" onclick="toggleActivity(this)">
+      <div class="activity-header">
+        <div class="activity-info">
+          <span class="activity-category">Text-to-SQL</span> <span class="activity-date">· 2025.06</span>
+          <h3>Text-To-SQL시스템 MCP 연동</h3>
+          <div class="one-liner">LightRAG 지식그래프 + MCP 프로토콜로 자연어 SQL 변환 시스템 구축</div>
+        </div>
+        <div class="activity-thumb-placeholder">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <img src="./assets/images/A03.gif" alt="Text-To-SQL MCP 연동" style="width:100%;border-radius:8px;">
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              MSSQL 데이터베이스의 테이블 메타데이터를 LightRAG 지식그래프(246노드/252관계)로 임베딩하고, MCP(Model Context Protocol)를 통해 Claude Desktop과 연동하여 자연어 질의를 SQL로 변환하는 시스템을 구축했습니다.
+              <br><br>
+              AWS EC2에 LightRAG API 서버를 배포하고, Streamable HTTP 기반 mcp-proxy를 통해 웹 서비스까지 확장했습니다.
+              <br><br>
+              그래프+벡터 하이브리드 검색으로 테이블 간 JOIN 관계를 정확히 추론하며, SQL 지식 없이도 자연어만으로 데이터 조회가 가능합니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== AI 도입 제안서 — 2025.04 ====== -->
+    <div class="activity-card animate-in" style="animation-delay:1.15s" onclick="toggleActivity(this)">
+      <div class="activity-header">
+        <div class="activity-info">
+          <span class="activity-category">Proposal</span> <span class="activity-date">· 2025.04</span>
+          <h3>AI 도입 제안서 작성</h3>
+          <div class="one-liner">2025 사회적 약자를 위한 기술 개발 사업 서류 제안 통과</div>
+        </div>
+        <div class="activity-thumb-placeholder">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <img src="./assets/images/A02.png" alt="AI 도입 제안서" style="width:100%;border-radius:8px;">
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              "2025 사회적 약자를 위한 기술 개발 사업"에 구음장애인을 위한 맞춤형 음성 인식 플랫폼 'VoiceLink'를 기획하고 제안했습니다.
+              <br><br>
+              NVIDIA Conformer-CTC 등 범용 ASR 모델을 기반으로 개별 사용자의 발성 패턴에 맞춰 자동 파인튜닝되는 고정확도 인식 모델을 설계하고, 멀티 에이전트 시스템을 통해 데이터 수집부터 모델 학습까지 전 과정을 자동화했습니다.
+              <br><br>
+              Qualcomm AI Hub 기반 모바일 추론 환경을 활용한 초개인화 시스템을 기획하여, 높은 경쟁률을 뚫고 서류 심사를 통과했습니다.
+            </div>
+            <a class="detail-link" href="https://drive.google.com/file/d/1kKZyivwnrGl0w98kqaEWWgMA2e_aGMvP/view?usp=sharing" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+              제안서 요약본 보기
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== RPC 분산 추론 — 2025.04 ====== -->
+    <div class="activity-card animate-in" style="animation-delay:1.2s" onclick="toggleActivity(this)">
+      <div class="activity-header">
+        <div class="activity-info">
+          <span class="activity-category">Distributed Inference</span> <span class="activity-date">· 2025.04</span>
+          <h3>RPC 분산 추론 서버 구축</h3>
+          <div class="one-liner">Jetson AGX Orin 클러스터로 Qwen3-235B 모델 분산 추론 환경 구축</div>
+        </div>
+        <div class="activity-thumb-placeholder">
+          <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM5 15l3.5-4.5 2.5 3.01L14.5 9l4.5 6H5z"/></svg>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <video muted loop playsinline preload="metadata">
+              <source src="./assets/videos/A01.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              llama.cpp의 RPC Backend를 활용하여 Jetson AGX Orin 2대를 네트워크로 연결하고, 단일 기기(~60GB 메모리)로는 로드할 수 없는 88GB 규모의 Qwen3-235B(Q2_K_XL) 모델을 TCP 기반 RPC 프로토콜로 분산 추론하는 환경을 구축했습니다.
+              <br><br>
+              Docker 컨테이너 기반으로 마스터-워커 구조를 구성하고, 각 노드의 가용 메모리에 비례하여 모델 가중치와 KV 캐시가 자동 분배됩니다.
+            </div>
+          </div>
+          <div class="hw-badges">
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">Master</span>
+                <span class="hw-badge-device">Jetson AGX Orin</span>
+                <span class="hw-badge-model">Qwen3-235B</span>
+              </div>
+            </div>
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">Worker</span>
+                <span class="hw-badge-device">Jetson AGX Orin</span>
+                <span class="hw-badge-model">RPC Server</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ 2024 ════════════ -->
+    <div class="year-divider animate-in" style="animation-delay:1.25s"><span>2024</span></div>
+
+    <!-- ====== Gemma2 QLoRA 로그 분석 — 2024.08 ====== -->
+    <div class="activity-card animate-in" style="animation-delay:1.25s" onclick="toggleActivity(this)">
+      <div class="activity-header">
+        <div class="activity-info">
+          <span class="activity-category">Edge AI</span> <span class="activity-date">· 2024.08</span>
+          <h3>Cisco 장비 로그 분석용 QLoRA 파인튜닝 프로젝트</h3>
+          <div class="one-liner">Gemma2 2B QLoRA 파인튜닝으로 Cisco 장비 로그 분석 자동화 — Jetson Edge 배포</div>
+        </div>
+        <div class="activity-thumb-placeholder">
+          <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM5 15l3.5-4.5 2.5 3.01L14.5 9l4.5 6H5z"/></svg>
+        </div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 12 12"><path d="M2 4.5L6 8.5L10 4.5"/></svg>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="media-wrapper">
+          <div class="media-frame">
+            <img src="./assets/images/A05.png" alt="Gemma2 QLoRA 로그 분석" style="width:100%;border-radius:8px;">
+          </div>
+          <div class="detail-row">
+            <div class="detail-summary">
+              범용 LLM은 Cisco 장비의 도메인 특화 로그(FAN, Power, Temperature, CPU 등)를 정확히 해석하지 못했고, 보안 정책상 외부 API 사용이 불가능한 사내 환경에서 로컬 구동 가능한 경량 모델이 필요했습니다.
+              <br><br>
+              이를 해결하기 위해 약 3,300건의 실제 장비 로그·시스템 에러 메시지 데이터셋을 직접 구축하고, Google Gemma-2 2B 모델에 QLoRA 기법을 적용하여 파인튜닝했습니다.
+              <br><br>
+              초기 HuggingFace PEFT 환경에서 Unsloth 프레임워크로 전환해 메모리 효율 30% 절감과 학습 안정성을 확보했으며, LoRA 파라미터를 최적화하여 로그 분석 정확도 72%→89%(+17%p), 오류 감지율 54%→81%(+27%p)를 달성했습니다.
+              <br><br>
+              학습된 모델은 GGUF로 변환 후 Ollama 기반으로 Jetson AGX Orin에 배포하여, 외부 의존 없이 엣지 환경에서 실시간 로그 분석이 가능한 시스템을 구현했습니다.
+              <br><br>
+              오픈소스 LLM 커뮤니티(HuggingFace, Unsloth)를 최대한 활용한 강화학습 사례로, Jetson Edge 서버에 적용한 사내 AI 자동화 적용 사례입니다.
+            </div>
+            <a class="detail-link" href="https://huggingface.co/swordKoala/cisco_system_message_test-Q8_0-GGUF" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+              학습한 모델 (HuggingFace)
+            </a>
+            <a class="detail-link" href="https://huggingface.co/datasets/swordKoala/cisco_system_message" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+              제작 데이터셋 (HuggingFace)
+            </a>
+            <a class="detail-link" href="https://www.cisco.com/c/en/us/td/docs/switches/datacenter/nexus9000/sw/104x/system-messages/n9k-syslogs-10-4-3-f.html#2" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+              데이터셋 출처 (Cisco 공식 문서)
+            </a>
+          </div>
+          <div class="hw-badges">
+            <div class="hw-badge">
+              <img class="hw-badge-img" src="./assets/images/Jetson.png" alt="Jetson AGX Orin">
+              <div class="hw-badge-text">
+                <span class="hw-badge-role">Edge Device</span>
+                <span class="hw-badge-device">Jetson AGX Orin</span>
+                <span class="hw-badge-model">Gemma2 2B QLoRA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /activity-grid -->
+
+  <footer>
+    Thank you for visiting!
+  </footer>
+
+</div><!-- /container -->
+
+<script>
+  function toggleCard(card) {
+    const wasOpen = card.classList.contains('open');
+
+    // 다른 열린 카드 닫기 + 영상 정지
+    document.querySelectorAll('.project-card.open').forEach(c => {
+      c.classList.remove('open');
+      const v = c.querySelector('video');
+      if (v) { v.pause(); v.currentTime = 0; }
+    });
+
+    // 선택한 카드 열기 + 영상 재생
+    if (!wasOpen) {
+      card.classList.add('open');
+      const v = card.querySelector('video');
+      if (v) v.play();
+    }
+  }
+
+  function toggleActivity(card) {
+    const wasOpen = card.classList.contains('open');
+
+    // 다른 열린 activity 카드 닫기 + 영상 정지
+    document.querySelectorAll('.activity-card.open').forEach(c => {
+      c.classList.remove('open');
+      const v = c.querySelector('video');
+      if (v) { v.pause(); v.currentTime = 0; }
+    });
+
+    // 선택한 카드 열기
+    if (!wasOpen) {
+      card.classList.add('open');
+      const v = card.querySelector('video');
+      if (v) v.play();
+    }
+  }
+</script>
+
+</body>
+</html>
