@@ -1290,7 +1290,11 @@
     if (!wasOpen) {
       card.classList.add('open');
       const v = card.querySelector('video');
-      if (v) v.play();
+      if (v) {
+        v.play();
+        const title = card.querySelector('h3')?.textContent || 'unknown';
+        gtag('event', 'video_play', { project_name: title });
+      }
     }
   }
 
@@ -1308,7 +1312,11 @@
     if (!wasOpen) {
       card.classList.add('open');
       const v = card.querySelector('video');
-      if (v) v.play();
+      if (v) {
+        v.play();
+        const title = card.querySelector('h3')?.textContent || 'unknown';
+        gtag('event', 'video_play', { project_name: title });
+      }
     }
   }
 
